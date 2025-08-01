@@ -1,0 +1,26 @@
+@startuml
+'AI-generated, потому что я понятия не имею, что я делаю
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(директор, "Директор", "Получает сводные отчёты")
+Person(оператор, "Оператор фермы", "Локальный интерфейс на ферме")
+Person(ветврач, "Ветеринар", "USB-выгрузка логов")
+Person(логист, "Логист", "Синхронизация раз в день")
+
+System_Boundary(ferma, "Ферма N") {
+  System(edge_box, "Edge-бокс", "Raspberry Pi + GPU")
+}
+System(sync_service, "AgroLive Sync", "Однокнопочный сервис обмена")
+System(агроплатформа, "АгроПром Х", "Существующая платформа")
+
+System_Ext(cam_vendor, "Камеры", "Подключены к edge-боксу")
+System_Ext(feed_vendor, "Оборудование", "Подключено к edge-боксу")
+System_Ext(sms_gateway, "SMS-шлюз", "Подключён к edge-боксу")
+
+Rel(оператор, edge_box, "Локальный дашборд")
+Rel(edge_box, cam_vendor, "Анализ видео")
+Rel(edge_box, feed_vendor, "Управление кормами")
+Rel(edge_box, sms_gateway, "SMS-тревоги")
+Rel(edge_box, sync_service, "Экспорт логов")
+Rel(sync_service, агроплатформа, "Раз в сутки")
+@enduml
