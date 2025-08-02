@@ -2,7 +2,6 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 Person(operator, "Оператор", "Мониторинг алертов и уведомлений")
-Person(staff, "Стафф", "Смотрит метрики о состоянии животных и кормов")
 
 System(agro_mvp, "АгроТех MVP", "Новая система мониторинга")
 System(current_system, "АгроТех Х", "Существующая система")
@@ -10,9 +9,8 @@ System_Ext(cam_vendor, "Камеры видеонаблюдения")
 System_Ext(sms_gateway, "SMS-шлюз", "Уведомления при отсутствии интернета")
 
 Rel(operator, agro_mvp, "Использует?")
-Rel(staff, agro_mvp, "Использует метрики и отчеты")
-
-Rel(agro_mvp, cam_vendor, "Видео-аналитика")
+Rel(cam_vendor, agro_mvp, "Видео-данные")
 Rel(agro_mvp, sms_gateway, "SMS-оповещения")
-Rel(agro_mvp, current_system, "Синхронизация поголовья, REST")
+Rel(agro_mvp, current_system, "Анализ видео, передача отчетов о состоянии фермы, получение оповещений")
+Rel(sms_gateway, operator, "SMS-оповещения")
 @enduml
