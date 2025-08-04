@@ -7,12 +7,9 @@ System_Boundary(edge-agent, "Edge-Агент") {
     Container(agro_mvp, "АгроТех MVP", "Java", "Новая система мониторинга")
     ContainerDb(cache, "Data Cache", "", "Кэш данных на случай отключения связи")
 
-    Container_Boundary(farm_monitoring, "Данные с фермы") {
-        Container(food_mnt, "Мониторинг кормов", "Python", "Отслеживание запасов")
-        Container(water_mnt, "Мониторинг воды", "Python", "Мониторинг систем фильтрации")
-        Container(feeding_control_system, "Управляющая система", "Python", "Управление системами кормления")
-        Container(feeding_adapter, "Адаптер", "", "Адаптер для кормушек разных производителей")
-    }
+    Container(food_mnt, "Мониторинг кормов", "Python", "Отслеживание запасов")
+    Container(water_mnt, "Мониторинг воды", "Python", "Мониторинг систем фильтрации")
+    Container(feeding_control_system, "Управляющая система", "Python", "Управление системами кормления")
 }
 
 System_Boundary(current_system, "Цифровая платформа АгроПром X") {
@@ -29,15 +26,14 @@ Rel(sms_gateway, operator, "SMS-оповещения")
 
 Rel(food_mnt, feeding_control_system, "Передает данные")
 Rel(water_mnt, feeding_control_system, "Передает данные")
-Rel(feeding_control_system, feeding_adapter, "Передает команды")
-Rel(feeding_adapter, feeding_system, "Передает команды")
+Rel(feeding_control_system, feeding_system, "Передает команды")
 Rel(feeding_control_system, agro_mvp, "Передает данные", "HTTP")
 
 Rel(cam_vendor, agro_mvp, "Видео-данные", "RTSP")
 Rel(agro_mvp, cache, "Использует при ошибках запросов к ЦП")
 Rel(agro_mvp, sms_gateway, "SMS-оповещения")
 Rel(agro_mvp, iot_gw, "Отправка метрик", "HTTP")
-Rel(agro_mvp, ai_cluster, "Анализ видео, получение оповещений", "Что-то потоковое")
+Rel(agro_mvp, ai_cluster, "gRPC стрим / WebRTC", "RTSP over TCP")
 Rel(iot_gw, kafka, "Публикует данные", "Kafka Protocol")
 Rel(ai_cluster, kafka, "Публикует данные", "Kafka Protocol")
 

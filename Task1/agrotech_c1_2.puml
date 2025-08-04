@@ -1,26 +1,21 @@
 @startuml
-'AI-generated, потому что я понятия не имею, что я делаю
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
-Person(директор, "Директор", "Получает сводные отчёты")
-Person(оператор, "Оператор фермы", "Локальный интерфейс на ферме")
-Person(ветврач, "Ветеринар", "USB-выгрузка логов")
-Person(логист, "Логист", "Синхронизация раз в день")
+' AI-generated
 
-System_Boundary(ferma, "Ферма N") {
-  System(edge_box, "Edge-бокс", "Raspberry Pi + GPU")
-}
-System(sync_service, "AgroLive Sync", "Однокнопочный сервис обмена")
-System(агроплатформа, "АгроПром Х", "Существующая платформа")
+Person(operator, "Оператор фермы", "Получает алерты и сводки")
+Person(admin, "Администратор компании", "Смотрит метрики по всем фермам")
 
-System_Ext(cam_vendor, "Камеры", "Подключены к edge-боксу")
-System_Ext(feed_vendor, "Оборудование", "Подключено к edge-боксу")
-System_Ext(sms_gateway, "SMS-шлюз", "Подключён к edge-боксу")
+System(edge_farm, "Edge-система фермы", "Raspberry Pi 4 + Coral TPU. Полный AI-цикл локально")
+System_Ext(cameras, "IP-камеры", "RTSP")
+System_Ext(feeding, "Система кормления/поения", "Modbus-TCP / OPC-UA")
+System_Ext(sms_gateway, "SMS-шлюз на ферме", "USB-модем / GSM")
+System(cloud, "Центральный сервер", "Собирает логи, метрики, конфиги. Не критичен для работы фермы")
 
-Rel(оператор, edge_box, "Локальный дашборд")
-Rel(edge_box, cam_vendor, "Анализ видео")
-Rel(edge_box, feed_vendor, "Управление кормами")
-Rel(edge_box, sms_gateway, "SMS-тревоги")
-Rel(edge_box, sync_service, "Экспорт логов")
-Rel(sync_service, агроплатформа, "Раз в сутки")
+Rel(operator, edge_farm, "Мониторит через веб-интерфейс", "HTTP")
+Rel(cameras, edge_farm, "Видео RTSP")
+Rel(edge_farm, feeding, "Команды кормить/поить")
+Rel(edge_farm, sms_gateway, "Отправляет SMS при критических событиях")
+Rel(edge_farm, cloud, "Периодически выгружает логи & метрики", "HTTPS (если связь есть)")
+Rel(admin, cloud, "BI-дэшборды и отчёты")
 @enduml

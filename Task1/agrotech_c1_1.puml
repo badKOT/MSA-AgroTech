@@ -7,10 +7,14 @@ System(agro_mvp, "АгроТех MVP", "Новая система монитор
 System(current_system, "АгроТех Х", "Существующая система")
 System_Ext(cam_vendor, "Камеры видеонаблюдения")
 System_Ext(sms_gateway, "SMS-шлюз", "Уведомления при отсутствии интернета")
+System_Ext(feeding_system, "Система кормления", "Передает команды")
+System_Ext(edge_agent, "Edge-Агент", "Прокси RTSP + кэш")
 
+Rel(cam_vendor, edge_agent, "RTSP-поток")
+Rel(edge_agent, agro_mvp, "Проксирование видео / кэш")
 Rel(operator, agro_mvp, "Использует?")
-Rel(cam_vendor, agro_mvp, "Видео-данные")
+Rel(agro_mvp, feeding_system, "Передает команды")
 Rel(agro_mvp, sms_gateway, "SMS-оповещения")
-Rel(agro_mvp, current_system, "Анализ видео, передача отчетов о состоянии фермы, получение оповещений")
+Rel(agro_mvp, current_system, "Передаёт RTSP-ссылку в AI-кластер")
 Rel(sms_gateway, operator, "SMS-оповещения")
 @enduml
