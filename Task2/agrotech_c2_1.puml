@@ -4,12 +4,11 @@
 Person(operator, "Оператор", "Мониторинг алертов и уведомлений")
 
 System_Boundary(edge-agent, "Edge-Агент") {
-    Container(agro_mvp, "АгроТех MVP", "Java", "Новая система мониторинга")
+    Container(agro_mvp, "АгроТех MVP", "Java", "Новая система мониторинга, управление системами кормления")
     ContainerDb(cache, "Data Cache", "", "Кэш данных на случай отключения связи")
 
     Container(food_mnt, "Мониторинг кормов", "Python", "Отслеживание запасов")
     Container(water_mnt, "Мониторинг воды", "Python", "Мониторинг систем фильтрации")
-    Container(feeding_control_system, "Управляющая система", "Python", "Управление системами кормления")
 }
 
 System_Boundary(current_system, "Цифровая платформа АгроПром X") {
@@ -24,13 +23,12 @@ System_Ext(feeding_system, "Система кормления", "Общий API 
 
 Rel(sms_gateway, operator, "SMS-оповещения")
 
-Rel(food_mnt, feeding_control_system, "Передает данные")
-Rel(water_mnt, feeding_control_system, "Передает данные")
-Rel(feeding_control_system, feeding_system, "Передает команды")
-Rel(feeding_control_system, agro_mvp, "Передает данные", "HTTP")
+Rel(food_mnt, agro_mvp, "Передает данные")
+Rel(water_mnt, agro_mvp, "Передает данные")
+Rel(agro_mvp, feeding_system, "Передает команды")
 
 Rel(cam_vendor, agro_mvp, "Видео-данные", "RTSP")
-Rel(agro_mvp, cache, "Использует при ошибках запросов к ЦП")
+Rel(agro_mvp, cache, "Использует при ошибках запросов к платформе")
 Rel(agro_mvp, sms_gateway, "SMS-оповещения")
 Rel(agro_mvp, iot_gw, "Отправка метрик", "HTTP")
 Rel(agro_mvp, ai_cluster, "gRPC стрим / WebRTC", "RTSP over TCP")
