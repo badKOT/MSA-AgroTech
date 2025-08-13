@@ -17,7 +17,7 @@ System_Boundary(edge_farm, "Edge-система фермы (Raspberry Pi 4 8 Г�
 System_Ext(cameras, "IP-камеры", "RTSP")
 System_Ext(feeding, "Контроллер кормления", "Modbus-TCP")
 System_Ext(sms_modem, "USB GSM-модем", "AT-команды")
-System_Ext(cloud, "Центральный сервер", "MinIO, Git, Kafka Connect")
+System(cloud, "Центральный сервер", "MinIO, Git, Kafka Connect")
 
 Rel(operator, web, "", "Wi-Fi/LAN")
 Rel(web, api, "REST/WebSocket")
