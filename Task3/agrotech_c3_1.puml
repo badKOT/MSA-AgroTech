@@ -20,14 +20,14 @@ Container(ai_cluster, "AI-кластер", "", "Анализ видео данн
 
 Rel(food_mnt, feeding_control_component, "Передает данные")
 Rel(water_mnt, feeding_control_component, "Передает данные")
-Rel(feeding_control_component, feeding_system, "Передает команды", "Modbus-TCP")
-Rel(feeding_control_component, iot_gw, "Отправка метрик", "HTTP")
+Rel_L(feeding_control_component, feeding_system, "Передает команды", "Modbus-TCP")
+Rel_L(feeding_control_component, iot_gw, "Отправка метрик", "HTTP")
 Rel(feeding_control_component, notification_component, "Оповещает о командах, а также о сильных отклонениях метрик от нормы")
 
 Rel(cam_vendor, cam_proxy, "Видео-данные", "RTSP")
-Rel(cam_proxy, cache, "Использует при ошибках запросов к платформе")
+Rel_R(cam_proxy, cache, "Использует при ошибках запросов к платформе")
 Rel(notification_component, sms_gateway, "SMS-оповещения")
-Rel(cam_proxy, ai_cluster, "gRPC стрим / WebRTC", "RTSP over TCP")
-Rel(ai_cluster, notification_component, "Оповещает об экстренных ситуациях")
+Rel_D(cam_proxy, ai_cluster, "gRPC стрим / WebRTC", "RTSP over TCP")
+Rel_L(ai_cluster, notification_component, "Оповещает об экстренных ситуациях")
 
 @enduml

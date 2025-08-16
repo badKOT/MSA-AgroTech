@@ -1,0 +1,26 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(cam_proxy, "Компонент данных с камер (Java)") {
+
+    Component(rtsp_client, "RTSP Клиент", "FFmpeg", "Получение потоков с камер")
+    Component(frame_buffer, "Буффер", "Redis", "Буферизация кадров (5 сек)")
+    Component(controller, "Контроллер", "Java")
+
+    Component(clip_manager, "Video Clip Manager", "Java", "Сохранение фрагментов и получение при восстановлении связи")
+
+    Rel(rtsp_client, frame_buffer, "Кадры", "RTSP")
+    Rel(frame_buffer, controller, "Кадры")
+}
+
+System(ai_cluster, "AI-кластер", "Анализ видео данных: пересчет животных, контроль состояния, контроль задавливания")
+ContainerDb(cache, "Data Cache", "Кэш данных на случай отключения связи")
+
+System_Ext(cam_vendor, "Камеры видеонаблюдения")
+
+Rel_R(controller, ai_cluster, "Стриминг кадров")
+Rel(cam_vendor, rtsp_client, "Видеопотоки")
+Rel_D(controller, clip_manager, "Сохраняет,\nчитает видео")
+Rel_R(clip_manager, cache, "Сохраняет видео")
+
+@enduml
