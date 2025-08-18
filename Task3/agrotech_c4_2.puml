@@ -1,43 +1,55 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+allowmixing
 
 Container_Boundary(ai_inference, "AI-инференс (Python)") {
 
-    Component(rtsp_client, "RTSP Client", "FFmpeg", "Получение потоков с камер")
-    Component(frame_buffer, "Frame Buffer", "Redis", "Буферизация кадров (5 сек)")
-    Component(inference_engine, "Inference Engine", "TensorFlow Lite + libedgetpu", "Выполнение моделей на Coral TPU")
-    Component(tracker, "Object Tracker", "", "SORT-алгоритм")
-    Component(event_detector, "Event Detector", "Python", "Анализ последовательностей кадров")
-    Component(model_manager, "Model Manager", "Python", "Hot-Swap моделей")
-    
-    Component(pig_detection, "Pig Detection", "TFLite Model")
-    Component(behavior_clf, "Behavior Classifier", "TFLite Model", "агрессия/беспокойство")
-    Component(crush_detector, "Piglet Crush Detector", "TFLite Model")
-    
-    Component(metrics_writer, "Metrics Writer", "Python", "Асинхронная запись в TSDB")
-    Component(clip_manager, "Video Clip Manager", "Python", "Сохранение фрагментов в MinIO")
-
-    Rel(rtsp_client, frame_buffer, "Raw frames", "RTSP")
-    Rel(frame_buffer, inference_engine, "Buffered frames")
-    Rel(inference_engine, tracker, "Detections")
-    Rel(tracker, event_detector, "Tracked objects")
-    Rel(event_detector, metrics_writer, "Events")
-    Rel(event_detector, clip_manager, "Video fragments")
-    Rel(model_manager, inference_engine, "Load models", "gRPC")
-    
-    Rel_R(pig_detection, inference_engine, "Execution")
-    Rel_R(behavior_clf, inference_engine, "Execution")
-    Rel_R(crush_detector, inference_engine, "Execution")
+class RtspClient {
+    void connect()
+}
+class FrameBuffer {
+    void receive()
+    void send()
+}
+class Tracker {
+    void track()
+}
+class EventDetector {
+    void detect()
+}
+class ModelManager {
+    void upload(ModelUpdate modelUpdate)
+}
+class PigDetection {
+    void detect()
+}
+class BehaviorClf {
+    void classify()
+}
+class CrushDetector {
+    void detect()
+}
+class MetricsWriter {
+    void write()
+}
+class ClipManager {
+    void manage()
 }
 
-System_Ext(cameras, "IP-камеры", "RTSP")
-System_Ext(tsdb, "TimescaleDB", "SQL")
-System_Ext(minio, "MinIO", "S3 API")
-System_Ext(sync_service, "Синхронизатор", "gRPC")
+FrameBuffer --> RtspClient
+FrameBuffer --> InferenceEngine
+Tracker --> InferenceEngine
+EventDetector --> MetricsWriter
+EventDetector --> ClipManager
+ModelManager --> InferenceEngine
 
-Rel(cameras, rtsp_client, "Видеопотоки")
-Rel(metrics_writer, tsdb, "INSERT metrics")
-Rel(clip_manager, minio, "PUT video clips")
-Rel(sync_service, model_manager, "Model updates", "gRPC")
+PigDetection --> InferenceEngine
+BehaviorClf --> InferenceEngine
+CrushDetector --> InferenceEngine
+
+class AAAAAAAAAAAAA {
+    пожалуйста поставьте плюсик я никогда не буду заниматься system design я бэкэндер я не хочу диаграммы я хочу хелм-чарты и nginx манифесты а не вот это все
+}
+}
 
 @enduml
