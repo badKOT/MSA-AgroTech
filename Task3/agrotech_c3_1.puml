@@ -1,0 +1,33 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+ContainerDb(cache, "Data Cache", "", "Кэш данных на случай отключения связи")
+
+Container(food_mnt, "Мониторинг кормов", "Python", "Отслеживание запасов")
+Container(water_mnt, "Мониторинг воды", "Python", "Мониторинг систем фильтрации")
+
+Container_Boundary(mvp, "API Application") {
+    Component(cam_proxy, "Компонент данных с камер", "Java", "Управляет данными с камер")
+    Component(feeding_control_component, "Управление системами кормления", "Python", "Может быть очередью сообщений, может быть системой с логикой")
+    Component(notification_component, "Компонент для оповещений", "Go")
+}
+
+System_Ext(cam_vendor, "Камеры видеонаблюдения")
+System_Ext(sms_gateway, "SMS-шлюз", "Уведомления при отсутствии интернета")
+System_Ext(feeding_system, "Контроллер кормления", "Общий API для разных производителей", "Modbus/OPC-UA")
+Container(iot_gw, "IoT шлюз", "Node-RED", "Сбор данных с полей и ферм")
+Container(ai_cluster, "AI-кластер", "", "Анализ видео данных: пересчет животных, контроль состояния, контроль задавливания")
+
+Rel(food_mnt, feeding_control_component, "Передает данные")
+Rel(water_mnt, feeding_control_component, "Передает данные")
+Rel_L(feeding_control_component, feeding_system, "Передает команды", "Modbus-TCP")
+Rel_L(feeding_control_component, iot_gw, "Отправка метрик", "HTTP")
+Rel(feeding_control_component, notification_component, "Оповещает о командах, а также о сильных отклонениях метрик от нормы")
+
+Rel(cam_vendor, cam_proxy, "Видео-данные", "RTSP")
+Rel_R(cam_proxy, cache, "Использует при ошибках запросов к платформе")
+Rel(notification_component, sms_gateway, "SMS-оповещения")
+Rel_D(cam_proxy, ai_cluster, "gRPC стрим / WebRTC", "RTSP over TCP")
+Rel_L(ai_cluster, notification_component, "Оповещает об экстренных ситуациях")
+
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+System_Boundary(edge_farm, "Edge-система фермы") {
+    Container(web, "Веб-UI", "React (serve через Nginx)", "Локальный дашборд")
+    Container(api, "Edge API", "Python FastAPI", "REST + WebSocket для UI")
+    Container(ai, "AI-инференс", "Python + TensorFlow", "Обнаружение/трекинг свиней, классификация поведения")
+    ContainerDb(db, "Data Lake", "S3-compatible", "Видеофрагменты")
+    Container(sync, "Синхронизатор", "Python (RClone + Git)", "Отправка логов в MinIO/S3, pull-обновлений моделей")
+    Container(mqtt, "MQTT-брокер", "Mosquitto", "Обмен между микросервисами, в т.ч. с контроллером кормления")
+    ContainerDb(tsdb, "Time-series БД", "TimescaleDB", "Метрики и события")
+    Component(food_monitoring, "Датчики воды, еды", "", "Отслеживание запасов еды и мониторинг систем фильтрации")
+    Component(monitoring_component, "Компонент мониторинга", "", "Анализирует метрики")
+    Component(notification_component, "Компонент оповещений", "", "Отправляет оповещения")
+}
+
+System_Ext(cameras, "IP-камеры", "RTSP")
+System_Ext(feeding, "Контроллер кормления", "Modbus-TCP")
+System_Ext(sms_modem, "USB GSM-модем", "AT-команды")
+System_Ext(cloud, "Центральный сервер", "MinIO, Git, Kafka Connect")
+
+Rel(web, api, "REST/WebSocket")
+Rel(food_monitoring, monitoring_component, "Отправляет данные")
+Rel(api, ai, "gRPC вызовы инференса")
+Rel(monitoring_component, tsdb, "Чтение/запись\nсобытий")
+Rel(ai, tsdb, "Сохраняет метрики")
+Rel(ai, db, "Сохраняет фрагменты")
+Rel(cameras, ai, "RTSP-потоки")
+Rel(monitoring_component, mqtt, "Публикация команд")
+Rel(mqtt, feeding, "Modbus-шлюз")
+Rel(sync, tsdb, "Экспорт логов")
+Rel(sync, cloud, "HTTPS (если связь есть)", "rclone sync")
+Rel(monitoring_component, notification_component, "Инициирует отправку оповещений")
+Rel(notification_component, sms_modem, "AT-команды", "USB-serial")
+@enduml

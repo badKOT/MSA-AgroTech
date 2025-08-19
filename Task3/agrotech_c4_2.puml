@@ -1,0 +1,55 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+allowmixing
+
+Container_Boundary(ai_inference, "AI-инференс (Python)") {
+
+class RtspClient {
+    void connect()
+}
+class FrameBuffer {
+    void receive()
+    void send()
+}
+class Tracker {
+    void track()
+}
+class EventDetector {
+    void detect()
+}
+class ModelManager {
+    void upload(ModelUpdate modelUpdate)
+}
+class PigDetection {
+    void detect()
+}
+class BehaviorClf {
+    void classify()
+}
+class CrushDetector {
+    void detect()
+}
+class MetricsWriter {
+    void write()
+}
+class ClipManager {
+    void manage()
+}
+
+FrameBuffer --> RtspClient
+FrameBuffer --> InferenceEngine
+Tracker --> InferenceEngine
+EventDetector --> MetricsWriter
+EventDetector --> ClipManager
+ModelManager --> InferenceEngine
+
+PigDetection --> InferenceEngine
+BehaviorClf --> InferenceEngine
+CrushDetector --> InferenceEngine
+
+class AAAAAAAAAAAAA {
+    пожалуйста поставьте плюсик я никогда не буду заниматься system design я бэкэндер я не хочу диаграммы я хочу хелм-чарты и nginx манифесты а не вот это все
+}
+}
+
+@enduml

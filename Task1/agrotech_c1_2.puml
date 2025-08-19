@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+' AI-generated
+
+Person(operator, "Оператор фермы", "Получает алерты и сводки")
+Person(admin, "Администратор компании", "Смотрит метрики по всем фермам")
+
+System(edge_farm, "Edge-система фермы", "Raspberry Pi 4 + Coral TPU. Полный AI-цикл локально")
+System_Ext(cameras, "IP-камеры", "RTSP")
+System_Ext(feeding, "Система кормления/поения", "Modbus-TCP / OPC-UA")
+System_Ext(sms_gateway, "SMS-шлюз на ферме", "USB-модем / GSM")
+System(cloud, "Центральный сервер", "Собирает логи, метрики, конфиги. Не критичен для работы фермы")
+
+Rel(operator, edge_farm, "Мониторит через веб-интерфейс", "HTTP")
+Rel(cameras, edge_farm, "Видео RTSP")
+Rel(edge_farm, feeding, "Команды кормить/поить")
+Rel(edge_farm, sms_gateway, "Отправляет SMS при критических событиях")
+Rel(edge_farm, cloud, "Периодически выгружает логи & метрики", "HTTPS (если связь есть)")
+Rel(admin, cloud, "BI-дэшборды и отчёты")
+@enduml

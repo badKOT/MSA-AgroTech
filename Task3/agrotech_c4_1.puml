@@ -1,0 +1,35 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(cam_proxy, "Компонент данных с камер (Java)") {
+
+class AAAAAAAAAAAAA {
+    пожалуйста поставьте плюсик я никогда не буду заниматься system design я бэкэндер я не хочу диаграммы я хочу хелм-чарты и nginx манифесты а не вот это все
+}
+class RtspClient {
+    void connect()
+}
+class FrameBuffer {
+    void receive()
+    void send()
+}
+class Controller {
+    void control()
+}
+class ClipManager {
+    void manage()
+}
+
+RtspClient --> FrameBuffer
+FrameBuffer --> Controller
+
+circle DataCache
+ClipManager --> DataCache
+
+circle AiCluster
+Controller --> AiCluster
+Controller --> ClipManager
+
+}
+
+@enduml
